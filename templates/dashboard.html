@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Plan your crop | AgriHub{% endblock %}
+{% block content %}
+<div class="dash">
+  <section class="plan" aria-labelledby="plan-h">
+    <h1 id="plan-h">Plan your crop</h1>
+    <form id="rec-form">
+      <fieldset class="soil-picker">
+        <legend>Soil type</legend>
+        <div class="stack">
+          {% for s in soils %}
+          <label class="stratum-opt" style="--bg:{{ soil_colors[s][0] }};--fg:{{ soil_colors[s][1] }}">
+            <input type="radio" name="soil" value="{{ s }}" required>
+            <span>{{ s }}</span>
+          </label>
+          {% endfor %}
+        </div>
+      </fieldset>
+      <label class="field">Crop
+        <select name="crop" required>
+          <option value="">Choose a crop</option>
+          {% for c in crops %}<option>{{ c }}</option>{% endfor %}
+        </select>
+      </label>
+      <label class="field">City or village <span class="hint">for live weather, optional</span>
+        <input name="city" placeholder="For example, Hyderabad" autocomplete="off">
+      </label>
+      <button class="btn primary" type="submit">Get advice</button>
+    </form>
+
+    {% if recent %}
+    <div class="recent">
+      <h2>Recent searches</h2>
+      <ul>
+        {% for r in recent %}
+        <li><button type="button" class="linklike" data-soil="{{ r.soil }}" data-crop="{{ r.crop }}" data-city="{{ r.city or '' }}">{{ r.crop }} on {{ r.soil|lower }} soil{% if r.city %}, {{ r.city }}{% endif %}</button></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </section>
+
+  <section class="result-pane" id="result" aria-live="polite" aria-label="Crop advice">
+    <div class="empty">
+      <h2>Your advice appears here</h2>
+      <p>Choose a soil layer and a crop, then select Get advice. Add your city to check today's temperature against what the crop needs.</p>
+    </div>
+  </section>
+</div>
+
+<div class="lower">
+  <section class="weather" aria-labelledby="wx-h">
+    <h2 id="wx-h">Weather check</h2>
+    <form id="weather-form" class="inline">
+      <label class="sr" for="wx-city">City or village</label>
+      <input id="wx-city" name="city" placeholder="Enter a city or village" required>
+      <button class="btn primary" type="submit">Check weather</button>
+    </form>
+    <div id="weather-result" aria-live="polite"></div>
+  </section>
+
+  <section class="chat" aria-labelledby="chat-h">
+    <h2 id="chat-h">AgriBot</h2>
+    <div id="chat-log" class="chat-log" role="log" aria-live="polite">
+      <div class="msg bot">Hi, I'm AgriBot. Ask me about crops, soil, irrigation, fertilizer or pests.</div>
+      {% for m in chat %}
+      <div class="msg {{ 'user' if m.role == 'user' else 'bot' }}">{{ m.message }}</div>
+      {% endfor %}
+    </div>
+    <div class="chips" aria-label="Suggested questions">
+      <button type="button" class="chip" data-q="How much water does rice need?">How much water does rice need?</button>
+      <button type="button" class="chip" data-q="Which fertilizer is best for tomato?">Best fertilizer for tomato</button>
+      <button type="button" class="chip" data-q="How do I control bollworm in cotton?">Control bollworm in cotton</button>
+    </div>
+    <form id="chat-form" class="inline">
+      <label class="sr" for="chat-input">Your question</label>
+      <input id="chat-input" placeholder="Ask a farming question" autocomplete="off" required>
+      <button class="btn primary" type="submit">Send</button>
+    </form>
+  </section>
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='app.js') }}"></script>{% endblock %}

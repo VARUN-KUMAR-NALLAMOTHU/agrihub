@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Confirm your email | AgriHub{% endblock %}
+{% block content %}
+<div class="auth">
+  <div class="auth-art" aria-hidden="true">
+    {% for s in all_soils %}<i style="--bg:{{ soil_colors[s][0] }}"></i>{% endfor %}
+  </div>
+  <div class="auth-form">
+    <h1>Confirm your email</h1>
+    <p class="muted">Enter the six-digit code we sent to <strong>{{ email }}</strong>. It expires after 10 minutes.</p>
+    <form method="post">
+      <label class="field">Verification code
+        <input class="otp" name="otp" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required autofocus>
+      </label>
+      <button class="btn primary" type="submit">Confirm email</button>
+    </form>
+    <form method="post" action="{{ url_for('resend_otp') }}" class="resend">
+      <span class="muted">No email yet?</span>
+      <button type="submit" class="linklike">Send a new code</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

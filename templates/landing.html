@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block body_class %}landing{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <h1>Know what your soil can grow.</h1>
+    <p class="lede">Pick a soil and a crop. AgriHub tells you when to sow, how much water and fertilizer to use, and checks the plan against today's weather where you farm.</p>
+    <div class="cta-row">
+      <a class="btn primary" href="{{ url_for('register') }}">Create free account</a>
+      <a class="btn ghost" href="{{ url_for('login') }}">Log in</a>
+    </div>
+  </div>
+
+  <div class="strata" role="group" aria-label="Soil types. Select one to see the crops that suit it.">
+    {% for s in all_soils %}
+    <button type="button" class="stratum{% if loop.first %} is-active{% endif %}"
+            style="--bg:{{ soil_colors[s][0] }};--fg:{{ soil_colors[s][1] }};--i:{{ loop.index0 }}"
+            aria-pressed="{{ 'true' if loop.first else 'false' }}">
+      <span class="s-name">{{ s }} soil</span>
+      <span class="s-count">{{ soil_crops[s]|length }} crop{{ '' if soil_crops[s]|length == 1 else 's' }}</span>
+      <span class="s-crops">{{ soil_crops[s]|join(', ') }}</span>
+    </button>
+    {% endfor %}
+  </div>
+</section>
+
+<section class="features">
+  <h2>Built for the decisions before sowing</h2>
+  <dl>
+    <div><dt>Advice for ten crops</dt><dd>Season, water, sowing method, fertilizer per hectare and field practices for rice, wheat, cotton, sugarcane, maize, groundnut, millets, pulses, tomato and chilli.</dd></div>
+    <div><dt>Weather where you farm</dt><dd>Enter your city or village. AgriHub reads current conditions from Google and tells you whether today's temperature suits the crop.</dd></div>
+    <div><dt>AgriBot</dt><dd>Ask follow-up questions about pests, irrigation or fertilizer in plain language. Your conversation stays with your account.</dd></div>
+    <div><dt>Verified accounts</dt><dd>Sign up with your email and confirm it with a six-digit code that expires after ten minutes.</dd></div>
+  </dl>
+</section>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='landing.js') }}"></script>{% endblock %}
